@@ -42,7 +42,7 @@
         // ==== Some setting values ====
         const CANVAS_W = 800;
         const CANVAS_H = 450;
-        const BALL_SPEED = 1;     // try 1.5–2.5
+    let BALL_SPEED = 1;     // try 1.5–2.5
         const PADDLE_SPEED = 4;   // try 3–5
         const PADDLE_W = 120;     // wider paddle helps beginners
         const PADDLE_H = 12;
@@ -88,10 +88,7 @@
             // Paddle
             ctx.fillStyle = '#4ade80';
             ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
-            if(count == 4){
-                BALL_SPEED += 1;
-                count == 0;
-            }
+            // speed increase is handled on paddle hit (see checkCollision)
 
             // If you lose the game, so message game over instead.
             if (!running) {
@@ -161,6 +158,17 @@
                 ctx.fillStyle = randomColor;
                 score++;
                 count++;
+                // Increase ball speed every 4 successful paddle hits
+                if (count >= 4) {
+                    BALL_SPEED += 1;
+                    // Reapply direction while preserving sign
+                    const signX = Math.sign(ball.dx) || 1;
+                    const signY = Math.sign(ball.dy) || -1; // prefer -1 so the ball moves upward after paddle bounce
+                    ball.dx = signX * BALL_SPEED;
+                    ball.dy = signY * BALL_SPEED;
+                    count = 0;
+                    console.log('Speed increased to', BALL_SPEED);
+                }
                 updateUI();
                 detectWallHit('paddle');
             }
