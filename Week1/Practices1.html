@@ -1,197 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bouncing Game</title>
     <style>
-      body {
-        margin: 0;
-        background: #111;
-        color: #eee;
-        font: 16px system-ui;
-        display: grid;
-        place-items: center;
-        height: 100vh;
-      }
-      canvas {
-        background: #222;
-        border: 2px solid #555;
-      }
-      #ui {
-        position: fixed;
-        top: 10px;
-        left: 10px;
-      }
-      button {
-        margin-left: 8px;
-      }
+        body {
+            margin: 0;
+            background: #111;
+            color: #eee;
+            font: 16px system-ui;
+            display: grid;
+            place-items: center;
+            height: 100vh;
+        }
+
+        canvas {
+            background: #222;
+            border: 2px solid #555;
+        }
+
+        #ui {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+        }
+
+        button {
+            margin-left: 8px;
+        }
     </style>
-  </head>
-  <body>
+</head>
+
+<body style="background-image: url('../image/img1.png'); background-size: cover;">
     <div id="ui">
-      Score: <span id="score">0</span> 
-      Highest Score: <span id="highestscore">0</span> 
-      <button id="restart">Restart</button>
+        Score: <span id="score">0</span> | High Score: <span id="highScore">0</span> <button id="restart">Restart</button>
     </div>
     <canvas id="game" width="480" height="320"></canvas>
     <script>
-   // ==== Some setting values ====
-   const CANVAS_W = 800;
-   const CANVAS_H = 450;
-   const BALL_SPEED = 5;     // try 1.5–2.5
-   const PADDLE_SPEED = 5;   // try 3–5
-   const PADDLE_W = 120;     // wider paddle helps beginners
-   const PADDLE_H = 12;
-   
-   let score = 0;
-   let highestscore = parseInt(localStorage.getItem("highestscore")) || 0;
-   let running = true;
+        // ==== Some setting values ====
+        const CANVAS_W = 800;
+        const CANVAS_H = 450;
+        let BALL_SPEED = 1;     // try 1.5–2.5
+        const PADDLE_SPEED = 4;   // try 3–5
+        const PADDLE_W = 120;     // wider paddle helps beginners
+        const PADDLE_H = 12;
 
-   // Ball & paddle
-   const ball = { x: CANVAS_W/2, y: CANVAS_H/2, r: 10, dx: BALL_SPEED, dy: BALL_SPEED };
-   const paddle = { x: CANVAS_W/2 - PADDLE_W/2, y: CANVAS_H - 40, w: PADDLE_W, h: PADDLE_H, speed: PADDLE_SPEED, dx: 0 };
-    
-   // === We should have Global Variables
-   // === to keep all the reference objects. So what are the referenced objects we should have?
-   // 1. A canvas constant
-   const canvas = document.getElementById("game");
-   // 2. A canvas' 2D context constant
-   const ctx = canvas.getContext("2d");
-   // 3. A score element, so we can update the score
-   const scoreEl = document.getElementById("score");
-   const highestscoreE1 = document.getElementById("highestscore")
-   // 4. A restart button, so we can apply click on it
-   const restartBtn = document.getElementById("restart");
-   
-   // Ensure canvas matches tunables (if you change in HTML, these still enforce)
-   canvas.width = CANVAS_W;
-   canvas.height = CANVAS_H;
-   
-   // === We should define functions as well
-   // 1. A function to draw the ball and the paddle - draw() { .... }
-   function draw() {
-    // Clear screen, to make the canvas blank so we can draw something new on it.
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      // Paddle
-      ctx.fillStyle = '#4ade80';
-      ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
-      
-      // If you lose the game, so message game over instead.
-      if (!running) {
-        ctx.font = " bold 30px Arial";
-        ctx.fillStyle = 'white';
-        ctx.fillText("Game Over",325,225);
-        ctx.font = "18px Arial";
-        ctx.fillStyle = 'white';
-        ctx.fillText("Click restart to play again", 305,250)
-      }
-      else{
-        // Ball
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
-      ctx.fillStyle = '#facc15';
-      ctx.fill();
-      }
-   }
-   // 2. A function to move the paddle left/right - movePaddle() { .... }
-   function movePaddle() {
-      
-      document.addEventListener('keydown', () => {
-        if(event.key == "ArrowRight"){
-            paddle.dx = paddle.speed;
-        }else if(event.key == "ArrowLeft"){
-            paddle.dx = -paddle.speed;
+        let count = 0;
+        let score = 0;
+        let highScore = 0;
+        let running = true;
+        let leftPressed = false;
+        let rightPressed = false;
+        // Ball & paddle
+        const ball = { x: CANVAS_W / 2, y: CANVAS_H / 2, r: 10, dx: BALL_SPEED, dy: BALL_SPEED };
+        console.log(ball);
+        const paddle = { x: CANVAS_W / 2 - PADDLE_W / 2, y: CANVAS_H - 40, w: PADDLE_W, h: PADDLE_H, speed: PADDLE_SPEED, dx: 0 };
+        console.log(paddle);
+
+        // === We should have Global Variables
+        // === to keep all the reference objects. So what are the referenced objects we should have?
+        // 1. A canvas constant
+        const canvas = document.getElementById("game");
+        // 2. A canvas' 2D context constant
+        const ctx = canvas.getContext("2d");
+        // 3. A score element, so we can update the score
+        const scoreEl = document.getElementById("score");
+        // 4. A restart button, so we can apply click on it
+        const restartBtn = document.getElementById("restart");
+        const highScoreEl = document.getElementById("highScore");
+
+        // Ensure canvas matches tunables (if you change in HTML, these still enforce)
+        canvas.width = CANVAS_W;
+        canvas.height = CANVAS_H;
+
+        // === We should define functions as well
+        // 1. A function to draw the ball and the paddle - draw() { .... }
+        function draw() {
+            // Clear screen, to make the canvas blank so we can draw something new on it.
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Ball
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+            ctx.fillStyle = '#facc15';
+            ctx.fill();
+
+            // Paddle
+            ctx.fillStyle = '#4ade80';
+            ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+
+
+            // If you lose the game, so message game over instead.
+            if (!running) {
+                ctx.fillStyle = "white";
+                ctx.textAlign = "center";
+                ctx.font = "50px Arial";
+                ctx.fillText("Game Over", CANVAS_W / 2, CANVAS_H / 2);
+                ctx.font = "15px Arial";
+                ctx.fillText("Click to Restart to play again", CANVAS_W / 2, CANVAS_H / 2 + 30);
+            }
         }
-      });
-      document.addEventListener('keyup', () => {
-        paddle.dx = 0;
-      });
-      restartBtn.addEventListener('click', () =>{
-        init();
-        running = true;
-      });
-      document.addEventListener('keydown', () => {
-        if(event.key == "r"){
+        // 2. A function to move the paddle left/right - movePaddle() { .... }
+        function movePaddle() {
+            // Make sure paddle stay in the same vertical position
+            paddle.dx = 0;
+
+            if (leftPressed) paddle.dx = -paddle.speed;
+            if (rightPressed) paddle.dx = paddle.speed;
+
+            paddle.x += paddle.dx;
+
+            // clamp, make sure you can't move paddle outside the canvas:
+            if (paddle.x < 0) paddle.x = 0;
+            if (paddle.x + paddle.w > canvas.width) paddle.x = canvas.width - paddle.w;
+        }
+        // 3. A function to move the ball, it bounces when touch the left/top/right wall of canvas - moveBall() { ..... }
+        function moveBall() {
+            // Move ball based on velocity
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            // left/right walls - bounce
+            if (ball.x - ball.r < 0) {
+                ball.x = ball.r;
+                ball.dx *= -1;
+                detectWallHit('left');
+            }
+            if (ball.x + ball.r > canvas.width) {
+                ball.x = canvas.width - ball.r;
+                ball.dx *= -1;
+                detectWallHit('right');
+            }
+
+            // top wall - bounce
+            if (ball.y - ball.r < 0) {
+                ball.y = ball.r;
+                ball.dy *= -1;
+                detectWallHit('top');
+            }
+        }
+        // 4. A function to check collision with the paddle or miss - checkCollision() { .... }
+        // function checkCollision() {
+        function checkCollision() {
+            var ballColor = ['#f87171', '#34d399', '#60a5fa', '#fbbf24', '#a78bfa'
+                , '#f472b6', '#f97316', '#22d3ee', '#10b981', '#e879f9'
+                , '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e'
+            ];
+            const hitsPaddle =
+                ball.y + ball.r >= paddle.y &&
+                ball.x > paddle.x &&
+                ball.x < paddle.x + paddle.w;
+
+            if (hitsPaddle && ball.dy > 0) {
+                ball.dy *= -1;
+                const randomColor = ballColor[Math.floor(Math.random() * ballColor.length)];
+                ball.color = randomColor;
+                ctx.fillStyle = randomColor;
+                score += Math.ceil(BALL_SPEED);
+                count++;
+                if (count >= 4) {
+                    BALL_SPEED += 0.5;
+                    ball.dx = (ball.dx > 0 ? 1 : -1) * BALL_SPEED;
+                    ball.dy = -BALL_SPEED;
+                    count = 0;
+                }
+                updateUI();
+                detectWallHit('paddle');
+            }
+
+            // Missed paddle → only stop when ball goes below the canvas
+            if (ball.y - ball.r > CANVAS_H) {
+                detectWallHit('bottom');
+                running = false;
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('bouncingGameHighScore', highScore);
+                }
+            }
+        }
+
+        // Helper: detect which side the ball hit; this can be used for logging, sounds, or scoring
+        function detectWallHit(side) {
+            // side is one of: 'left', 'right', 'top', 'bottom', 'paddle'
+            // For now, simply log to console. Could be expanded for sounds/score multipliers.
+            console.log('Hit:', side);
+        }
+
+        // 5. A function to update the score - updateUI() { ..... }
+        function updateUI() {
+            scoreEl.textContent = score;
+            highScoreEl.textContent = highScore;
+        }
+
+        // === And the loop, to keep the game running
+        function init() {
+            score = 0;
+            running = true;
+            ball.x = CANVAS_W / 2; ball.y = CANVAS_H / 2; ball.dx = BALL_SPEED; ball.dy = BALL_SPEED;
+            paddle.x = CANVAS_W / 2 - PADDLE_W / 2;
+            highScore = localStorage.getItem('bouncingGameHighScore') || 0;
+            updateUI();
+        }
+
+        // === Loop ===
+        function loop() {
+            if (running) {
+                movePaddle();
+                moveBall(); 
+                checkCollision();
+            }
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        document.addEventListener("keydown", (e) => {
+            switch (e.key) {
+                case "ArrowLeft":
+                    leftPressed = true;
+                    break;
+                case "ArrowRight":
+                    rightPressed = true;
+                    break;
+            }
+        });
+
+        document.addEventListener("keyup", (e) => {
+            switch (e.key) {
+                case "ArrowLeft":
+                    leftPressed = false;
+                    break;
+                case "ArrowRight":
+                    rightPressed = false;
+                    break;
+            }
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if(e.key == "r" || e.key == "R"){
+                init();
+            }
+        })
+
+        // Restart button
+        restartBtn.addEventListener('click', () => {
             init();
-            running= true;
-        }
-      })
+        });
+        // So we initialize the value
+        init();
+        // And then, we start the loop so everythign start running
+        loop();
 
-      paddle.x += paddle.dx;
-      // clamp, make sure you can't move paddle outside the canvas:
-      if (paddle.x < 0) paddle.x = 0;
-      if (paddle.x + paddle.w > canvas.width) paddle.x = canvas.width - paddle.w;
-    }
-   // 3. A function to move the ball, it bounces when touch the left/top/right wall of canvas - moveBall() { ..... }
-   function moveBall() {
-    // These 2 lines of code are how your ball can be moved next
-    // It depends on the value of dx and dy
-      ball.x += ball.dx;
-      ball.y += ball.dy;
-      if(ball.x < ball.r || ball.x > CANVAS_W - ball.r ){
-        ball.dx *= -1;
-      }
-      if(ball.y < ball.r){
-        ball.dy *= -1;
-      }
+    </script>
+</body>
 
-   }
-   // 4. A function to check collision with the paddle or miss - checkCollision() { .... }
-   function checkCollision() {
-    const hitsPaddle =
-        ball.y + ball.r >= paddle.y &&
-        ball.x > paddle.x &&
-        ball.x < paddle.x + paddle.w;
-
-
-      if (hitsPaddle && ball.dy > 0) {
-        ball.dy *= -1;
-        score++;
-        updateUI();
-      }
-      // Missed paddle
-      // if the paddle miss the ball, then                          running = false;
-      if(ball.y - ball.r > paddle.y + PADDLE_H){
-        running = false;
-      }
-   }
-   // 5. A function to update the score - updateUI() { ..... }
-   function updateUI() {
-      scoreEl.textContent = score;
-      highestscoreE1.textContent = highestscore;
-   }
-   
-   // === And the loop, to keep the game running
-   function init() {
-    //console.log("My restartBTN", restartBtn)
-    if(score > highestscore){
-        highestscore = score;
-        localStorage.setItem("highestscore", highestscore)
-    }
-      score = 0; 
-      running = true;
-      ball.x = CANVAS_W/2; ball.y = CANVAS_H/2; ball.dx = BALL_SPEED; ball.dy = BALL_SPEED;
-      paddle.x = CANVAS_W/2 - PADDLE_W/2;
-      updateUI();
-   }
-    
-   // === Loop ===
-   function loop() {
-      if (running) {
-        movePaddle();
-        moveBall();
-        checkCollision();
-      }
-      draw();
-      requestAnimationFrame(loop);
-   }
-
-   // So we initialize the value
-   init();
-   // And then, we start the loop so everything start running
-   loop();
-   
-</script>
-  </body>
 </html>
