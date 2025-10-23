@@ -35,20 +35,21 @@
 
 <body style="background-image: url('../image/img1.png'); background-size: cover;">
     <div id="ui">
-        Score: <span id="score">0</span> <button id="restart">Restart</button>
+        Score: <span id="score">0</span> | High Score: <span id="highScore">0</span> <button id="restart">Restart</button>
     </div>
     <canvas id="game" width="480" height="320"></canvas>
     <script>
         // ==== Some setting values ====
         const CANVAS_W = 800;
         const CANVAS_H = 450;
-    let BALL_SPEED = 1;     // try 1.5–2.5
+        let BALL_SPEED = 1;     // try 1.5–2.5
         const PADDLE_SPEED = 4;   // try 3–5
         const PADDLE_W = 120;     // wider paddle helps beginners
         const PADDLE_H = 12;
 
         let count = 0;
         let score = 0;
+        let highScore = 0;
         let running = true;
         let leftPressed = false;
         let rightPressed = false;
@@ -68,6 +69,7 @@
         const scoreEl = document.getElementById("score");
         // 4. A restart button, so we can apply click on it
         const restartBtn = document.getElementById("restart");
+        const highScoreEl = document.getElementById("highScore");
 
         // Ensure canvas matches tunables (if you change in HTML, these still enforce)
         canvas.width = CANVAS_W;
@@ -88,7 +90,7 @@
             // Paddle
             ctx.fillStyle = '#4ade80';
             ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
-            // speed increase is handled on paddle hit (see checkCollision)
+
 
             // If you lose the game, so message game over instead.
             if (!running) {
@@ -156,18 +158,13 @@
                 const randomColor = ballColor[Math.floor(Math.random() * ballColor.length)];
                 ball.color = randomColor;
                 ctx.fillStyle = randomColor;
-                score++;
+                score += Math.ceil(BALL_SPEED);
                 count++;
-                // Increase ball speed every 4 successful paddle hits
                 if (count >= 4) {
-                    BALL_SPEED += 1;
-                    // Reapply direction while preserving sign
-                    const signX = Math.sign(ball.dx) || 1;
-                    const signY = Math.sign(ball.dy) || -1; // prefer -1 so the ball moves upward after paddle bounce
-                    ball.dx = signX * BALL_SPEED;
-                    ball.dy = signY * BALL_SPEED;
+                    BALL_SPEED += 0.5;
+                    ball.dx = (ball.dx > 0 ? 1 : -1) * BALL_SPEED;
+                    ball.dy = -BALL_SPEED;
                     count = 0;
-                    console.log('Speed increased to', BALL_SPEED);
                 }
                 updateUI();
                 detectWallHit('paddle');
@@ -177,6 +174,10 @@
             if (ball.y - ball.r > CANVAS_H) {
                 detectWallHit('bottom');
                 running = false;
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('bouncingGameHighScore', highScore);
+                }
             }
         }
 
@@ -190,6 +191,7 @@
         // 5. A function to update the score - updateUI() { ..... }
         function updateUI() {
             scoreEl.textContent = score;
+            highScoreEl.textContent = highScore;
         }
 
         // === And the loop, to keep the game running
@@ -198,6 +200,7 @@
             running = true;
             ball.x = CANVAS_W / 2; ball.y = CANVAS_H / 2; ball.dx = BALL_SPEED; ball.dy = BALL_SPEED;
             paddle.x = CANVAS_W / 2 - PADDLE_W / 2;
+            highScore = localStorage.getItem('bouncingGameHighScore') || 0;
             updateUI();
         }
 
