@@ -137,7 +137,7 @@ const stats = document.getElementById("stats");
 output.textContent = "Ready to practice DOM!";
 
 //Part 8: (DOM: Events, creating elements, rendering (Mini App))
-const state = { students: [] }; // { name: string, score: number }
+const state = { students: [], showOnlyPassing: false }; // { name: string, score: number }
 
 // Helpers:
 function computeAverage(arr) {
@@ -149,14 +149,38 @@ function computeAverage(arr) {
   return (totalScore / arr.length).toFixed(2);
 }
 
+// Bonus: "Show only pass" toggle
+const showOnlyPassContainer = document.createElement('div');
+const showOnlyPassToggle = document.createElement("input");
+showOnlyPassToggle.type = "checkbox";
+showOnlyPassToggle.id = "showOnlyPass";
+const showOnlyPassLabel = document.createElement("label");
+showOnlyPassLabel.textContent = "Show only passing";
+showOnlyPassLabel.htmlFor = "showOnlyPass";
+showOnlyPassContainer.append(showOnlyPassToggle, showOnlyPassLabel);
+stats.after(showOnlyPassContainer);
+
+showOnlyPassToggle.addEventListener("change", (e) => {
+  state.showOnlyPassing = e.target.checked;
+  render();
+});
+
 function render() {
+  // Bonus: Sort by score (desc)
+  state.students.sort((a, b) => b.score - a.score);
+
+  // Bonus: Filter for passing students
+  const studentsToDisplay = state.showOnlyPassing
+    ? state.students.filter(s => s.score >= 60)
+    : state.students;
+
   // 1) list.innerHTML = ""
   list.innerHTML = "";
 
   // 2) For each student create <li> "Name — score"
   //    - class: pass if score>=60 else fail
   //    - add a small remove button to delete by index
-  state.students.forEach((student, index) => {
+  studentsToDisplay.forEach(student => {
     const li = document.createElement("li");
     li.textContent = `${student.name} — ${student.score}`;
     li.className = student.score >= 60 ? "pass" : "fail";
@@ -165,7 +189,10 @@ function render() {
     removeBtn.textContent = "Remove";
     removeBtn.style.marginLeft = "1rem";
     removeBtn.addEventListener("click", () => {
-      state.students.splice(index, 1);
+      const index = state.students.findIndex(s => s === student);
+      if (index > -1) {
+        state.students.splice(index, 1);
+      }
       render();
     });
 
@@ -176,9 +203,10 @@ function render() {
   // 3) Update stats: "Count: X | Avg: Y | Pass: P | Fail: F"
   const studentCount = state.students.length;
   const averageScore = computeAverage(state.students);
+  const averageGrade = letterGrade(averageScore); // Bonus
   const passingCount = state.students.filter(s => s.score >= 60).length;
   const failingCount = studentCount - passingCount;
-  stats.textContent = `Count: ${studentCount} | Avg: ${averageScore} | Pass: ${passingCount} | Fail: ${failingCount}`;
+  stats.textContent = `Count: ${studentCount} | Avg: ${averageScore} (${averageGrade}) | Pass: ${passingCount} | Fail: ${failingCount}`;
 }
 
 // Add student:
