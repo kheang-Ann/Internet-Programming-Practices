@@ -1,8 +1,10 @@
 <template>
-  <div class="container">
+  <div :class="{ 'container': !isBig, 'container_big': isBig }">
     <img :src="image" />
-    <h3>{{ title }}</h3>
-    <span class="count">{{ productCount }} items</span>
+    <h3 v-if="!isBig">{{ title }}</h3>
+    <h2 v-else>{{ title }}</h2>
+    <span class="count" v-if="productCount > 0 && !isBig">{{ productCount }} items</span>
+    <span v-else-if="isBig">{{ productCount }}</span>
   </div>
 </template>
 
@@ -16,7 +18,7 @@ export default {
     },
     productCount: {
       type: Number,
-      required: true,
+      default: 0,
     },
     image: {
       required: true,
@@ -24,13 +26,17 @@ export default {
     bgColor: {
       type: String,
       default: '#81b13d99'
+    },
+    isBig: {
+      type: Boolean,
+      default: false,
     }
   },
 }
 </script>
 
 <style scoped>
-.container {
+.container, .container_big {
   border: 1px solid #81b13d;
   border-radius: 10px;
   display: flex;
@@ -39,6 +45,11 @@ export default {
   padding: 10px;
   background-color: v-bind(bgColor);
 }
+
+.container_big {
+  /* Specific styles for the big container if any, otherwise remove this block */
+}
+
 .count {
   color: #818080;
   font-size: 12px;
