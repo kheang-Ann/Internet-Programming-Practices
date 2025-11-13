@@ -13,6 +13,7 @@ const orangeImage = new URL('@/assets/orange.png', import.meta.url).href
 
 const cmsImage = new URL('@/assets/cms.jpg', import.meta.url).href
 const catImage = new URL('@/assets/cat.png', import.meta.url).href
+const vegmexImage = new URL('@/assets/veg_mex.jpg', import.meta.url).href
 
 export default {
   name: 'App',
@@ -31,6 +32,7 @@ export default {
 
       cmsImage,
       catImage,
+      vegmexImage,
     }
   },
   components: {
@@ -41,7 +43,7 @@ export default {
 
 <template>
   <div class="category-wrapper">
-    <CategoryComponent title="Burget & Cake" :product-count="14" :image="burgerImage" bg-color="#81B13D" />
+    <CategoryComponent title="Burget&Cake" :product-count="14" :image="burgerImage" bg-color="#81B13D" />
     <CategoryComponent title="Peach" :product-count="13" :image="peachImage" bg-color="#FFFCEB"/>
     <CategoryComponent title="Organic Wiki" :product-count="15" :image="kiwiImage" bg-color="#ECFFEC"/>
     <CategoryComponent title="Red Apple" :product-count="15" :image="appleImage" bg-color="#FEEFEA"/>
@@ -56,7 +58,7 @@ export default {
   <div class="category-wrapper_big">
     <CategoryComponent title="Everyday Fresh & Clean with Our Products" :image="cmsImage" bg-color="#F0E8D5" :is-big="true"/>
     <CategoryComponent title="Make your Breakfast Healthy and Easy" :image="catImage" bg-color="#F3E8E8" :is-big="true"/>
-    <CategoryComponent title="The best Organic Products Online" :image="cmsImage" bg-color="#E7EAF3" :is-big="true"/>
+    <CategoryComponent title="The best Organic Products Online" :image="vegmexImage" bg-color="#E7EAF3" :is-big="true"/>
   </div>
 </template>
 
@@ -65,11 +67,21 @@ export default {
   display: flex;
   flex-direction: row;
   gap: 15px;
+  flex-wrap: wrap;
 }
+
 .category-wrapper_big {
   padding: 40px;
   display: flex;
   flex-direction: row;
   gap: 25px;
+  max-width: 1200px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .category-wrapper, .category-wrapper_big {
+    flex-direction: column;
+  }
 }
 </style>
