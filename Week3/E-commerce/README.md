@@ -45,6 +45,8 @@ npm run test:unit
 
 ### Lint with [ESLint](https://eslint.org/)
 
+Note: This website also includes the responsive.
+
 ```sh
 npm run lint
 ```
