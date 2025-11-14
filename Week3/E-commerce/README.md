@@ -48,3 +48,5 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+Note: This website also includes the responsive.
