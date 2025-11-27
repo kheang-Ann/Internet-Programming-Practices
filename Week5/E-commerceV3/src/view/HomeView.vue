@@ -3,6 +3,7 @@ import CategoryComponent from '../components/CategoryComponent.vue'
 import ProductCart from '../components/ProductCart.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import { useProductStore } from '../stores/product'
+import Header_page from '@/components/Header_page.vue'
 
 const logoImage = new URL('@/assets/Logo.png', import.meta.url).href
 
@@ -56,11 +57,17 @@ export default {
     CategoryComponent,
     ProductCart,
     HeaderComponent,
+    Header_page,
   },
 }
 </script>
 
 <template>
+  <hr>
+  <div>
+    <Header_page />
+  </div>
+  <hr>
   <div>
     <HeaderComponent :title="'Welcome to Our Store'" :Image="logoImage" />
   </div>
@@ -173,6 +180,12 @@ export default {
 </template>
 
 <style scoped>
+.hr {
+  border: none;
+  height: 5px;
+  background-color: black;
+}
+
 .category-wrapper {
   display: flex;
   flex-direction: row;
