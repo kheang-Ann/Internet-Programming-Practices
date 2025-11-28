@@ -99,6 +99,7 @@ export default {
   align-items: center;
   gap: 10px;
   font-size: 30px;
+  padding-right: 20px;
 }
 
 .phone-number {

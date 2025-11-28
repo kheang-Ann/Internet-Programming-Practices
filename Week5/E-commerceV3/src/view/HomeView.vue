@@ -4,6 +4,7 @@ import ProductCart from '../components/ProductCart.vue'
 import HeaderComponent from '../components/HeaderComponent.vue'
 import { useProductStore } from '../stores/product'
 import Header_page from '@/components/Header_page.vue'
+import Header_page1 from '@/components/Header_page1.vue'
 
 const logoImage = new URL('@/assets/Logo.png', import.meta.url).href
 
@@ -58,11 +59,15 @@ export default {
     ProductCart,
     HeaderComponent,
     Header_page,
+    Header_page1,
   },
 }
 </script>
 
 <template>
+  <div>
+    <Header_page1 />
+  </div>
   <hr>
   <div>
     <Header_page />

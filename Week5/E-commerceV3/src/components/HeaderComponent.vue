@@ -1,8 +1,8 @@
 <template>
-  <link
+  <!-- <link
     href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css"
     rel="stylesheet"
-  />
+  /> -->
   <div>
     <div class="hero-wrapper">
       <img :src="heroBg" class="hero-bg" />
