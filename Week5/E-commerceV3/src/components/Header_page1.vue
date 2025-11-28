@@ -50,7 +50,7 @@ export default {
     const icon = new URL('@/assets/icon.png', import.meta.url).href
     return {
       navItems: [
-        {label: "Account", acc: "ri-user-3-line"},
+        {label: "Accounts", acc: "ri-user-3-line"},
         {label: "Compare", com: "ri-refresh-line"},
         {label: "Wishlist", wish: "ri-heart-2-line"},
         {label: "Cart", cart: "ri-shopping-cart-2-line"},
