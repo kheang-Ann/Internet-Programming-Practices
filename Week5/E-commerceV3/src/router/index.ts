@@ -8,11 +8,21 @@ const routes = [
     component: HomeView,
   },
   {
-    path: '/category',
+    path: '/category/:name',
     name: 'Category',
     // lazy-load a CategoryView which we'll create under `src/view`
     component: () => import('../view/CategoryView.vue'),
   },
+  {
+    path: '/hot-deals',
+    name: 'HotDeals',
+    component: () => import('../view/CategoryView.vue'),
+  },
+  {
+    path: '/product/:id',
+    name: 'product',
+    component: () => import('../view/ProductView.vue'),
+  }
 ]
 
 const router = createRouter({
