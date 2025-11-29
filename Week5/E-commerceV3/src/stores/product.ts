@@ -40,11 +40,15 @@ export const useProductStore = defineStore('product', {
 
   actions: {
     async fetchProducts() {
-      const response = await axios.get('http://localhost:3000/api/products').then((res) => {
-        this.products = res.data
-        console.log(this.products)
-      })
-      return response
+      try {
+        const res = await axios.get('http://localhost:3000/api/products');
+        this.products = res.data;
+        console.log(this.products);
+        return res;
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        throw error;
+      }
     },
   },
 })
