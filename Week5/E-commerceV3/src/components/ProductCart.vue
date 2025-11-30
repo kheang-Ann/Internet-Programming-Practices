@@ -23,7 +23,7 @@
           <span v-if="oldPrice" class="old-price">${{ oldPrice.toFixed(2) }}</span>
         </div>
 
-        <button class="add-btn" @click="addToCart">
+        <button class="add-btn" @click.stop="addToCart">
           Add <span class="plus-icon">+</span>
         </button>
       </div>

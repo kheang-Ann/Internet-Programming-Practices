@@ -68,13 +68,11 @@ export default {
   <div>
     <Header_page1 />
   </div>
-  <hr>
   <div>
     <Header_page />
   </div>
-  <hr>
   <div>
-    <HeaderComponent :title="'Welcome to Our Store'" :Image="logoImage" />
+    <HeaderComponent title="E-commerce" :Image="logoImage"/>
   </div>
   <h1 class="header">
     <span>Feature Categories</span>
@@ -203,9 +201,7 @@ export default {
   padding: 40px;
   display: flex;
   flex-direction: row;
-  gap: 25px;
-  max-width: 1200px;
-  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .header {

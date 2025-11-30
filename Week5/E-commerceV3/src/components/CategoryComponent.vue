@@ -1,22 +1,24 @@
 <template>
-  <div :class="{ 'container': !isBig, 'container_big': isBig }">
-    <div v-if="isBig" class="big-card-content">
-      <div class="text-content">
-        <h2>{{ title }}</h2>
-        <button class="shop-btn">
-          Shop Now
-          <span class="arrow">→</span>
-        </button>
+  <router-link to="/product" style="text-decoration: none;">
+    <div :class="{ container: !isBig, container_big: isBig }">
+      <div v-if="isBig" class="big-card-content">
+        <div class="text-content">
+          <h2>{{ title }}</h2>
+          <button class="shop-btn">
+            Shop Now
+            <span class="arrow">→</span>
+          </button>
+        </div>
+        <img :src="image" class="big-image" />
       </div>
-      <img :src="image" class="big-image" />
-    </div>
 
-    <div v-else class="small-card-content">
-      <img :src="image" />
-      <h3>{{ title }}</h3>
-      <span class="count" v-if="productCount > 0">{{ productCount }} items</span>
+      <div v-else class="small-card-content">
+        <img :src="image" />
+        <h3>{{ title }}</h3>
+        <span class="count" v-if="productCount > 0">{{ productCount }} items</span>
+      </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>

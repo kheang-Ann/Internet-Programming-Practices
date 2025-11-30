@@ -161,4 +161,10 @@ export default {
   font-size: 17px;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .search-box {
+    width: 100%; /* make search box full width on small screens */
+  }
+}
 </style>

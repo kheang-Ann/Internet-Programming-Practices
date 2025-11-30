@@ -9,15 +9,16 @@
 
     <!-- CENTER: NAV MENU -->
     <nav class="nav-menu">
-      <div
+      <router-link
         v-for="item in navItems"
         :key="item.label"
+        :to="item.route"
         class="nav-item"
       >
         <i v-if="item.icon" :class="item.icon"></i>
         <span>{{ item.label }}</span>
         <i v-if="item.dropdown" class="ri-arrow-down-s-line"></i>
-      </div>
+      </router-link>
     </nav>
 
     <!-- RIGHT: CONTACT -->
@@ -36,10 +37,10 @@ export default {
   data() {
     return {
       navItems: [
-        { label: "Hot Deals", icon: "ri-fire-line" },
-        { label: "Home" },
-        { label: "Food", dropdown: true },
-        { label: "Vegetables", dropdown: true },
+        { label: "Hot Deals", icon: "ri-fire-line", route: "/hot-deals"},
+        { label: "Home", route: "/" },
+        { label: "Food", dropdown: true},
+        { label: "Vegetables", dropdown: true},
         { label: "Drink" },
         { label: "Cookies" },
         { label: "Meat & Seafood", dropdown: true },
@@ -110,5 +111,22 @@ export default {
 .support-text {
   font-size: 12px;
   color: gray;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-menu {
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+  }
+
+  .contact-box {
+    margin-top: 10px;
+  }
 }
 </style>

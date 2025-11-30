@@ -14,15 +14,15 @@ const routes = [
     component: () => import('../view/CategoryView.vue'),
   },
   {
-    path: '/hot-deals',
-    name: 'HotDeals',
-    component: () => import('../view/CategoryView.vue'),
+    path: '/product/:id?',
+    name: 'Product',
+    component: () => import('../view/ProductView.vue'),
   },
   {
-    path: '/product/:id',
-    name: 'product',
+    path: '/hot-deals',
+    name: 'HotDeals',
     component: () => import('../view/ProductView.vue'),
-  }
+  },
 ]
 
 const router = createRouter({

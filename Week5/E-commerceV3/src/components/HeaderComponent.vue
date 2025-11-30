@@ -44,15 +44,7 @@ export default {
       this.email = ''
     }
   },
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    Image: {
-      required: true,
-    }
-  }
+  
 }
 </script>
 
