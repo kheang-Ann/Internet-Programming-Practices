@@ -1,6 +1,5 @@
 <template>
-  <router-link to="/product" style="text-decoration: none;">
-    <div :class="{ container: !isBig, container_big: isBig }">
+    <div :class="{ container: !isBig, container_big: isBig }" @click="handleClick" :style="{ backgroundColor: bgColor }">
       <div v-if="isBig" class="big-card-content">
         <div class="text-content">
           <h2>{{ title }}</h2>
@@ -18,13 +17,19 @@
         <span class="count" v-if="productCount > 0">{{ productCount }} items</span>
       </div>
     </div>
-  </router-link>
+  <!-- </router-link> -->
 </template>
 
 <script>
+import { useRouter } from 'vue-router'
+
 export default {
   name: 'CategoryComponent',
   props: {
+    id: {
+      type: [String, Number],
+      default: 1,
+    },
     title: {
       type: String,
       required: true,
@@ -44,6 +49,16 @@ export default {
       type: Boolean,
       default: false,
     }
+  },
+  setup(props) {
+    const router = useRouter()
+
+    function handleClick() {
+      // navigate to product detail view
+      router.push({ name: 'Product', params: { id: String(props.id) } })
+    }
+
+    return { handleClick }
   },
 }
 </script>

@@ -68,9 +68,11 @@ export default {
   <div>
     <Header_page1 />
   </div>
+  <hr>
   <div>
     <Header_page />
   </div>
+  <hr>
   <div>
     <HeaderComponent title="E-commerce" :Image="logoImage"/>
   </div>
@@ -86,53 +88,56 @@ export default {
       <span>Fruits</span>
     </span>
   </h1>
+    <router-link to="/product" style="text-decoration: none;">
   <div class="category-wrapper">
-    <CategoryComponent
-      title="Burget&Cake"
-      :product-count="14"
-      :image="burgerImage"
-      bg-color="#81B13D"
-    />
-    <CategoryComponent title="Peach" :product-count="13" :image="peachImage" bg-color="#FFFCEB" />
-    <CategoryComponent
-      title="Organic Wiki"
-      :product-count="15"
-      :image="kiwiImage"
-      bg-color="#ECFFEC"
-    />
-    <CategoryComponent
-      title="Red Apple"
-      :product-count="15"
-      :image="appleImage"
-      bg-color="#FEEFEA"
-    />
-    <CategoryComponent title="Snack" :product-count="34" :image="snackImage" bg-color="#FFF3EB" />
-    <CategoryComponent
-      title="Black Plum"
-      :product-count="23"
-      :image="blackplumImage"
-      bg-color="#FFF3FF"
-    />
-    <CategoryComponent
-      title="Vegetables"
-      :product-count="11"
-      :image="vegImage"
-      bg-color="#F2FCE4"
-    />
-    <CategoryComponent
-      title="Headphone"
-      :product-count="150"
-      :image="headphoneImage"
-      bg-color="#FFFCEB"
-    />
-    <CategoryComponent
-      title="Cake & Milk"
-      :product-count="33"
-      :image="cakemilkImage"
-      bg-color="#F2FCE4"
-    />
-    <CategoryComponent title="Orange" :product-count="22" :image="orangeImage" bg-color="#FFF3FF" />
-  </div>
+      <CategoryComponent
+        title="Burget&Cake"
+        :product-count="14"
+        :image="burgerImage"
+        bg-color="#81B13D"
+      />
+      <CategoryComponent title="Peach" :product-count="13" :image="peachImage" bg-color="#FFFCEB" />
+      <CategoryComponent
+        title="Organic Wiki"
+        :product-count="15"
+        :image="kiwiImage"
+        bg-color="#ECFFEC"
+      />
+      <CategoryComponent
+        title="Red Apple"
+        :product-count="15"
+        :image="appleImage"
+        bg-color="#FEEFEA"
+      />
+      <CategoryComponent title="Snack" :product-count="34" :image="snackImage" bg-color="#FFF3EB" />
+      <CategoryComponent
+        title="Black Plum"
+        :product-count="23"
+        :image="blackplumImage"
+        bg-color="#FFF3FF"
+      />
+      <CategoryComponent
+        title="Vegetables"
+        :product-count="11"
+        :image="vegImage"
+        bg-color="#F2FCE4"
+      />
+      <CategoryComponent
+        title="Headphone"
+        :product-count="150"
+        :image="headphoneImage"
+        bg-color="#FFFCEB"
+      />
+      <CategoryComponent
+        title="Cake & Milk"
+        :product-count="33"
+        :image="cakemilkImage"
+        bg-color="#F2FCE4"
+      />
+      <CategoryComponent title="Orange" :product-count="22" :image="orangeImage" bg-color="#FFF3FF" />
+    </div>
+    </router-link>
+  <router-link to="/product" style="text-decoration: none;">
   <div class="category-wrapper_big">
     <CategoryComponent
       title="Everyday Fresh & Clean with Our Products"
@@ -153,6 +158,7 @@ export default {
       :is-big="true"
     />
   </div>
+  </router-link>
     <h1 class="header">
     <span>Popular Products</span>
     <span class = "MenuBar">
@@ -165,10 +171,12 @@ export default {
       <span>Fruits</span>
     </span>
   </h1>
+    <router-link to="/product" style="text-decoration: none;">
   <div class="category-wrapper">
 <ProductCart
   v-for="category in productStore.getProductsWithBadges"
   :key="category.id"
+  :id="category.id"
   :title="category.name"
   :image="'http://localhost:3000/' + category.image"
   :brand="category.brand"
@@ -180,6 +188,7 @@ export default {
   :color="category.color"
 />
   </div>
+  </router-link>
 </template>
 
 <style scoped>

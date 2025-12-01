@@ -35,17 +35,7 @@ export default {
     <Header_page />
   </div>
   <hr>
-  <div class="product-view-content">
-    <h2 v-if="categoryName">{{ categoryName }}</h2>
-    <h2 v-else>Product View</h2>
-    <p v-if="productId">Product/Category ID: {{ productId }}</p>
-    <p v-else>Browse all products</p>
-
-    <!-- Add your product display logic here -->
-    <div class="product-container">
-      <p>This is where you'll display your products or product details</p>
-    </div>
-  </div>
+  <img src="@/assets/routeimg.png" alt="" style="width: 100%;">
 </template>
 
 <style scoped>

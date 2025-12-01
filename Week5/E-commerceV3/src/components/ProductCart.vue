@@ -1,40 +1,43 @@
 <template>
-  <div class="product-card">
-    <div v-if="parsedDiscount !== null && parsedDiscount !== undefined && parsedDiscount > 0" class="discount-label">
-      -{{ parsedDiscount }}%
-    </div>
-
-    <img :src="image" class="product-img" alt="Product image" />
-
-    <div class="product-body">
-      <p class="brand">{{ brand }}</p>
-      <p class="title">{{ title }}</p>
-
-      <div class="rating-row">
-        <span class="stars">{{ stars }}</span>
-        <span class="rating">({{ rating.toFixed(1) }})</span>
+  <router-link :to="{ name: 'Product', params: { id: id } }" style="text-decoration: none; color: inherit;">
+    <div class="product-card">
+      <div v-if="parsedDiscount !== null && parsedDiscount !== undefined && parsedDiscount > 0" class="discount-label">
+        -{{ parsedDiscount }}%
       </div>
 
-      <p class="weight">{{ weight }}</p>
+      <img :src="image" class="product-img" alt="Product image" />
 
-      <div class="price-row">
-        <div class="price-section">
-          <span class="price">${{ price.toFixed(2) }}</span>
-          <span v-if="oldPrice" class="old-price">${{ oldPrice.toFixed(2) }}</span>
+      <div class="product-body">
+        <p class="brand">{{ brand }}</p>
+        <p class="title">{{ title }}</p>
+
+        <div class="rating-row">
+          <span class="stars">{{ stars }}</span>
+          <span class="rating">({{ rating.toFixed(1) }})</span>
         </div>
 
-        <button class="add-btn" @click.stop="addToCart">
-          Add <span class="plus-icon">+</span>
-        </button>
+        <p class="weight">{{ weight }}</p>
+
+        <div class="price-row">
+          <div class="price-section">
+            <span class="price">${{ price.toFixed(2) }}</span>
+            <span v-if="oldPrice" class="old-price">${{ oldPrice.toFixed(2) }}</span>
+          </div>
+
+          <button class="add-btn" @click.stop.prevent="addToCart">
+            Add <span class="plus-icon">+</span>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>
 export default {
   name: 'ProductCart',
   props: {
+    id: { type: [String, Number], required: true },
     title: { type: String, default: 'Product Title' },
     image: { type: String, default: '' },
     brand: { type: String, default: 'Hodo Foods' },
