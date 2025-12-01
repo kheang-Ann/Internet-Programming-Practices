@@ -49,5 +49,14 @@ export const useProductStore = defineStore('product', {
         throw error;
       }
     },
+    async fetchProductById(productId: string) {
+      try {
+        const res = await axios.get(`http://localhost:3000/api/products/${productId}`);
+        return res.data;
+      } catch (error) {
+        console.error(`Error fetching product with ID ${productId}:`, error);
+        throw error;
+      }
+    }
   },
 })
