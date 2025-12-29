@@ -1,24 +1,52 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { OrdersService } from 'src/orders/orders.service';
-import { EVENT_PUBLISHER } from 'src/core/tokens';
-
-type EventPublisher = { publish: (event: string, payload: any) => void };
+import { Inject, Injectable } from '@nestjs/common';
+import { NOTIFICATION_FEATURES, NOTIFICATION_OPTIONS } from './constants';
+import type {
+  NotificationFeatureOptions,
+  NotificationModuleOptions,
+  NotificationChannel,
+} from './interface';
 
 @Injectable()
 export class NotificationsService {
   constructor(
-    @Inject(forwardRef(() => OrdersService))
-    private readonly ordersService: OrdersService,
-    @Inject(EVENT_PUBLISHER)
-    private readonly publisher: EventPublisher,
+    @Inject(NOTIFICATION_OPTIONS)
+    private readonly options: NotificationModuleOptions,
+
+    @Inject(NOTIFICATION_FEATURES)
+    private readonly features: NotificationFeatureOptions[],
   ) {}
 
-  notify(event: string, payload: any) {
-    console.log(`[NOTIFY] ${event}`, payload);
+  // Get feature config by name
+  private getFeature(
+    featureName: string,
+  ): NotificationFeatureOptions | undefined {
+    return this.features.find((f) => f.featureName === featureName);
+  }
 
-    // Example: call OrdersService for extra info (fake)
-    // this.ordersService.deleteOrder(); // don't actually do it, just for illustration
+  // Resolve channels (feature override -> global default)
+  private resolveChannels(
+    feature?: NotificationFeatureOptions,
+  ): NotificationChannel[] {
+    if (!this.options.enable) return [];
+    if (feature?.channels?.length) return feature.channels;
+    return [this.options.defaultChannel];
+  }
 
-    return { ok: true };
+  notify(featureName: string, event?: string, payload?: any) {
+    if (!this.options.enable)
+      return { skipped: true, reason: 'notifications disabled' };
+
+    const feature = this.getFeature(featureName);
+    const channels = this.resolveChannels(feature);
+
+    const prefix = feature?.prefix ?? `[${featureName.toUpperCase()}]`;
+    const message = `${prefix} (${this.options.appName}) ${event}`;
+
+    // For lab: only log, pretend “channels”
+    for (const ch of channels) {
+      console.log(`[${ch.toUpperCase()}] ${message}`, payload);
+    }
+
+    return { ok: true, channels, featureName, event };
   }
 }

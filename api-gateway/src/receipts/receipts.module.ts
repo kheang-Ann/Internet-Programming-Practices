@@ -6,7 +6,16 @@ import { ReceiptsService } from './receipts.service';
 import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Receipt]), NotificationModule],
+  imports: [
+    TypeOrmModule.forFeature([Receipt]),
+    NotificationModule.forFeature([
+      {
+        featureName: 'receipts',
+        prefix: '[RECEIPTS]',
+        channels: ['log'], // only log for receipts
+      },
+    ]),
+  ],
   providers: [ReceiptsService],
   controllers: [ReceiptsController],
 })

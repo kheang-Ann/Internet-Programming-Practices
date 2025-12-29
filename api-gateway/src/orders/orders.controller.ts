@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 
 @Controller('orders')
@@ -11,9 +11,9 @@ export class OrdersController {
     return this.ordersService.createOrder(body);
   }
 
-  @Delete()
-  delete() {
-    console.log("Delete order");
-    return this.ordersService.deleteOrder();
+  // src/orders/orders.controller.ts
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.ordersService.remove(id); // Changed from deleteOrder to remove
   }
 }

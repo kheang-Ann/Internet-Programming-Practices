@@ -19,6 +19,13 @@ import { NotificationModule } from 'src/notification/notification.module';
         },
       },
     ]),
+    NotificationModule.forFeature([
+      // <--- Add bracket
+      {
+        featureName: 'receipts',
+        prefix: '[RECEIPT]',
+      },
+    ]),
     forwardRef(() => NotificationModule),
   ],
   controllers: [OrdersController],

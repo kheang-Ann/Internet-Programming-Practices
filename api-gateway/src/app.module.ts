@@ -9,10 +9,14 @@ import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
+    NotificationModule.forRoot({
+      appName: 'API Gateway Lab',
+      defaultChannel: 'log',
+      enable: true,
+    }),
     OrdersModule,
     ReceiptsModule,
     PaymentsModule,
-    NotificationModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'postgres',
@@ -20,7 +24,7 @@ import { NotificationModule } from './notification/notification.module';
       username: 'postgres',
       password: 'postgres',
       database: 'order-worker',
-      entities: [__dirname + '/**/*.entity(.ts,.js)'],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true,
     }),
