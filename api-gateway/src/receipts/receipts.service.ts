@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { Receipt } from 'src/database/entities/receipts.entity';
 import { NotificationsService } from 'src/notification/notification.service';
 import { Repository } from 'typeorm';
@@ -9,12 +8,34 @@ import { UpdateReceiptDto } from './dto/update-receipt.dto';
 
 @Injectable()
 export class ReceiptsService {
-  [x: string]: any;
   constructor(
-    @InjectRepository(Receipt)
+    @Inject('RECEIPT_REPO')
     private readonly receiptRepo: Repository<Receipt>,
     private readonly notifications: NotificationsService,
   ) {}
+
+  // 1. Add findOne (needed for update/remove/get by id)
+  async findOne(receiptId: string) {
+    const receipt = await this.receiptRepo.findOne({
+      where: { receiptId } as any,
+    });
+    if (!receipt) {
+      throw new NotFoundException(`Receipt with ID ${receiptId} not found`);
+    }
+    return receipt;
+  }
+
+  // 2. Add findAll (Fixes error TS2339 on line 23)
+  async findAll() {
+    return await this.receiptRepo.find();
+  }
+
+  // 3. Add remove (Fixes error TS2339 on line 44)
+  async remove(id: string) {
+    const receipt = await this.findOne(id);
+    await this.receiptRepo.remove(receipt);
+    return { deleted: true, id };
+  }
 
   async create(dto: CreateReceiptDto) {
     const saved = await this.receiptRepo.save(
@@ -34,26 +55,19 @@ export class ReceiptsService {
   }
 
   async update(receiptId: string, dto: UpdateReceiptDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const receipt = await this.findOne(receiptId);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (dto.issuedAt !== undefined) receipt.issuedAt = new Date(dto.issuedAt);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (dto.name !== undefined) receipt.name = dto.name;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (dto.price !== undefined) receipt.price = dto.price;
 
     const saved = await this.receiptRepo.save(receipt);
 
     this.notifications.notify('receipts', 'receipt_updated', {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       receiptId: saved.receiptId,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       price: saved.price,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return saved;
   }
 }

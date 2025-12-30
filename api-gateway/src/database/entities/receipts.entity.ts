@@ -13,4 +13,5 @@ export class Receipt {
 
   @Column({ type: 'numeric', nullable: false })
   price: number;
+  issuedAt: Date;
 }
