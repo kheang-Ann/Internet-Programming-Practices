@@ -4,6 +4,7 @@ import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
 import { PaymentsModule } from 'src/payments/payments.module';
 import { NotificationModule } from 'src/notification/notification.module';
+import { CustomersModule } from 'src/customers/customers.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { NotificationModule } from 'src/notification/notification.module';
         },
       },
     ]),
+    CustomersModule,
     NotificationModule.forFeature([
       // <--- Add bracket
       {
