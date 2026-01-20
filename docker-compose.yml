@@ -10,30 +10,75 @@ services:
       RABBITMQ_DEFAULT_PASS: admin
 
   api-gateway:
-    build: ./api-gateway
+    build: 
+      context: ./api-gateway   # This points to the FOLDER
+      dockerfile: Dockerfile   # This is the FILE name inside that folder
     container_name: api-gateway
     command: npm run start:dev
     ports:
       - "3000:3000"
     environment:
       RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672
+      # The Gateway will eventually need the JWT secret to validate tokens
+      JWT_ACCESS_SECRET: super_secret_key_change_me 
     volumes:
       - ./api-gateway:/app
       - /app/node_modules
     depends_on:
       - rabbitmq
 
+  # NEW: Dedicated database for Authentication
+  auth-db:
+    image: postgres:16
+    container_name: auth-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: auth_db
+    ports:
+      - "5433:5432" # Mapped to 5433 to avoid conflict with your order-worker DB
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+
+  # UPDATED: Auth-service based on Practice 11 requirements
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    command: npm run start:dev
+    ports:
+      - "3001:3000" # Mapped to 3001 as per Part A
+    environment:
+      RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672
+      DB_HOST: auth-db
+      DB_PORT: 5432
+      DB_USER: admin
+      DB_PASS: password123
+      DB_NAME: auth_db
+      JWT_ACCESS_SECRET: super_secret_key_change_me
+      JWT_ACCESS_EXPIRES: "15m"
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules
+    depends_on:
+      - rabbitmq
+      - auth-db
+
   order-worker:
     build: ./order-worker
     container_name: order-worker
     command: npm run start:dev
+    ports:
+      - "3002:3002"
     environment:
       RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672
+      JWT_ACCESS_SECRET: super_secret_key_change_me
     volumes:
       - ./order-worker:/app
       - /app/node_modules
     depends_on:
       - rabbitmq
+      - postgres
+
   postgres:
     image: postgres:16
     container_name: postgres
@@ -45,5 +90,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
 volumes:
   pgdata:
+  auth_data: # New volume for persistent auth data

@@ -8,4 +8,7 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-CMD ["node", "dist/main.js"]
+ENV PORT=3002
+EXPOSE 3000
+
+CMD ["npm", "run", "start:dev"]
